@@ -2,14 +2,14 @@ FROM frappe/bench:latest
 
 WORKDIR /workspace
 
-# copy everything (ensures init.sh is included)
+# Copy everything into /workspace (make sure init.sh is included)
 COPY . .
 
-# List files to confirm init.sh is included
-RUN ls -la /workspace
+# Debug: check what files exist
+RUN echo "==== Files inside /workspace ====" && ls -la /workspace && cat /workspace/init.sh || echo "init.sh NOT FOUND"
 
 # Make sure script is executable
-RUN chmod +x ./init.sh
+RUN chmod +x /workspace/init.sh
 
-# Run the initialization script
-CMD ["bash", "./init.sh"]
+# Run initialization script
+CMD ["bash", "/workspace/init.sh"]
