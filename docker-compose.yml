@@ -1,4 +1,4 @@
-version: "3.8" # Updated version
+version: "3.8"
 services:
   mariadb:
     image: mariadb:10.8
@@ -6,7 +6,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
-      - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
+      - --skip-innodb-read-only-compressed
     environment:
       MYSQL_ROOT_PASSWORD: 123
     volumes:
@@ -16,16 +16,20 @@ services:
     image: redis:alpine
 
   frappe:
-    image: frappe/bench:latest
-    command: bash /workspace/init.sh
-    environment:
-      - SHELL=/bin/bash
-    working_dir: /home/frappe
-    volumes:
-      - .:/workspace
+    build: .
     ports:
+<<<<<<< HEAD
       - 8100:8000
       - 9100:9000
+=======
+      - 8000:8000
+      - 9000:9000
+    environment:
+      - SHELL=/bin/bash
+    depends_on:
+      - mariadb
+      - redis
+>>>>>>> 7f9a00ac0 (Fix: bake init.sh inside Docker image for Coolify)
 
 volumes:
   mariadb-data:
