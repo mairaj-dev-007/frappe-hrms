@@ -2,9 +2,7 @@ FROM frappe/bench:latest
 
 WORKDIR /workspace
 
-# Copy only init.sh
-COPY init.sh /workspace/init.sh
-
-RUN chmod +x /workspace/init.sh
+# Copy init.sh with correct permissions
+COPY --chmod=755 init.sh /workspace/init.sh
 
 CMD ["bash", "/workspace/init.sh"]
