@@ -18,18 +18,13 @@ services:
   frappe:
     build: .
     ports:
-<<<<<<< HEAD
       - 8100:8000
       - 9100:9000
-=======
-      - 8000:8000
-      - 9000:9000
     environment:
       - SHELL=/bin/bash
     depends_on:
       - mariadb
       - redis
->>>>>>> 7f9a00ac0 (Fix: bake init.sh inside Docker image for Coolify)
 
 volumes:
   mariadb-data:
