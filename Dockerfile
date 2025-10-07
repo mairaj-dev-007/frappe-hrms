@@ -1,7 +1,10 @@
 FROM frappe/bench:latest
 
 WORKDIR /workspace
-COPY init.sh /workspace/init.sh
-RUN chmod +x /workspace/init.sh
 
-CMD ["bash", "/workspace/init.sh"]
+# copy everything first (ensures init.sh is included)
+COPY . .
+
+RUN chmod +x ./init.sh
+
+CMD ["bash", "./init.sh"]
