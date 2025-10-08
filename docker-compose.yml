@@ -17,9 +17,6 @@ services:
 
   frappe:
     build: .
-    ports:
-      - 3000:8000      # host:container mapping (optional, Traefik uses internal port)
-      - 9100:9000
     environment:
       - SHELL=/bin/bash
     depends_on:
@@ -28,12 +25,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frappe.rule=Host(`frap.web.musketeers.dev`)"
-      - "traefik.http.services.frappe.loadbalancer.server.port=8000"  # internal container port Frappe is listening on
-      - "traefik.http.routers.frappe.entrypoints=web"
-      # Optional: SocketIO support
-      - "traefik.tcp.routers.frappe-socket.rule=HostSNI(`frap.web.musketeers.dev`)"
-      - "traefik.tcp.routers.frappe-socket.service=frappe-socket"
-      - "traefik.tcp.services.frappe-socket.loadbalancer.server.port=9000"
+      - "traefik.http.services.frappe.loadbalancer.server.port=8000"
+      - "traefik.http.routers.frappe.entrypoints=websecure"
+      - "traefik.http.routers.frappe.tls=true"
+      - "traefik.http.services.frappe.loadbalancer.server.scheme=http"   # 🧠 important line
 
 volumes:
   mariadb-data:
