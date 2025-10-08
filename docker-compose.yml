@@ -18,8 +18,8 @@ services:
   frappe:
     build: .
     ports:
-      - 8100:8000
-      - 9100:9000
+      - "8000"
+      - "9000"
     environment:
       - SHELL=/bin/bash
     depends_on:
