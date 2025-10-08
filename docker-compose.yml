@@ -17,18 +17,14 @@ services:
 
   frappe:
     build: .
+    ports:
+      - 3000:8000
+      - 9100:9000
     environment:
       - SHELL=/bin/bash
     depends_on:
       - mariadb
       - redis
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frappe.rule=Host(`frap.web.musketeers.dev`)"
-      - "traefik.http.services.frappe.loadbalancer.server.port=8000"
-      - "traefik.http.routers.frappe.entrypoints=websecure"
-      - "traefik.http.routers.frappe.tls=true"
-      - "traefik.http.services.frappe.loadbalancer.server.scheme=http"   # 🧠 important line
 
 volumes:
   mariadb-data:
