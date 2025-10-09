@@ -28,27 +28,26 @@ services:
       - REDIS_SOCKETIO=redis://redis:6379/2
       - MARIADB_HOST=mariadb
       - MARIADB_ROOT_PASSWORD=123
-      - SITE_NAME=frap.web.musketeers.dev
     expose:
       - "8000"
       - "9000"
     labels:
       - "traefik.enable=true"
 
-      # --- Main Web App (HTTP)
+      # ---- Main App ----
       - "traefik.http.routers.frappe.rule=Host(`frap.web.musketeers.dev`)"
       - "traefik.http.routers.frappe.entrypoints=websecure"
       - "traefik.http.routers.frappe.tls.certresolver=myresolver"
       - "traefik.http.services.frappe.loadbalancer.server.port=8000"
 
-      # --- WebSocket Routing ---
+      # ---- WebSocket ----
       - "traefik.http.routers.frappe-ws.rule=Host(`frap.web.musketeers.dev`) && PathPrefix(`/socket.io`)"
       - "traefik.http.routers.frappe-ws.entrypoints=websecure"
       - "traefik.http.routers.frappe-ws.tls.certresolver=myresolver"
       - "traefik.http.services.frappe-ws.loadbalancer.server.port=9000"
-      - "traefik.http.middlewares.frappe-ws.headers.customrequestheaders.Upgrade=websocket"
-      - "traefik.http.middlewares.frappe-ws.headers.customrequestheaders.Connection=Upgrade"
-      - "traefik.http.routers.frappe-ws.middlewares=frappe-ws"
+      - "traefik.http.middlewares.ws-headers.headers.customrequestheaders.Upgrade=websocket"
+      - "traefik.http.middlewares.ws-headers.headers.customrequestheaders.Connection=Upgrade"
+      - "traefik.http.routers.frappe-ws.middlewares=ws-headers"
 
 volumes:
   mariadb-data:
