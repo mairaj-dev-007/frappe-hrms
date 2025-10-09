@@ -23,23 +23,32 @@ services:
       - redis
     environment:
       - SHELL=/bin/bash
+      - REDIS_CACHE=redis://redis:6379/0
+      - REDIS_QUEUE=redis://redis:6379/1
+      - REDIS_SOCKETIO=redis://redis:6379/2
+      - MARIADB_HOST=mariadb
+      - MARIADB_ROOT_PASSWORD=123
+      - SITE_NAME=frap.web.musketeers.dev
     expose:
       - "8000"
       - "9000"
     labels:
       - "traefik.enable=true"
 
-      # Main HTTP app (port 8000)
+      # --- Main Web App (HTTP)
       - "traefik.http.routers.frappe.rule=Host(`frap.web.musketeers.dev`)"
       - "traefik.http.routers.frappe.entrypoints=websecure"
       - "traefik.http.routers.frappe.tls.certresolver=myresolver"
       - "traefik.http.services.frappe.loadbalancer.server.port=8000"
 
-      # WebSocket for real-time updates (port 9000)
+      # --- WebSocket Routing ---
       - "traefik.http.routers.frappe-ws.rule=Host(`frap.web.musketeers.dev`) && PathPrefix(`/socket.io`)"
       - "traefik.http.routers.frappe-ws.entrypoints=websecure"
       - "traefik.http.routers.frappe-ws.tls.certresolver=myresolver"
       - "traefik.http.services.frappe-ws.loadbalancer.server.port=9000"
+      - "traefik.http.middlewares.frappe-ws.headers.customrequestheaders.Upgrade=websocket"
+      - "traefik.http.middlewares.frappe-ws.headers.customrequestheaders.Connection=Upgrade"
+      - "traefik.http.routers.frappe-ws.middlewares=frappe-ws"
 
 volumes:
   mariadb-data:
