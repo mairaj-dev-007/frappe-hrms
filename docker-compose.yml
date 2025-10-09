@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   mariadb:
     image: mariadb:10.8
@@ -17,14 +18,28 @@ services:
 
   frappe:
     build: .
-    ports:
-      - "8000"
-      - "9000"
-    environment:
-      - SHELL=/bin/bash
     depends_on:
       - mariadb
       - redis
+    environment:
+      - SHELL=/bin/bash
+    expose:
+      - "8000"
+      - "9000"
+    labels:
+      - "traefik.enable=true"
+
+      # Main HTTP app (port 8000)
+      - "traefik.http.routers.frappe.rule=Host(`frap.web.musketeers.dev`)"
+      - "traefik.http.routers.frappe.entrypoints=websecure"
+      - "traefik.http.routers.frappe.tls.certresolver=myresolver"
+      - "traefik.http.services.frappe.loadbalancer.server.port=8000"
+
+      # WebSocket for real-time updates (port 9000)
+      - "traefik.http.routers.frappe-ws.rule=Host(`frap.web.musketeers.dev`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.frappe-ws.entrypoints=websecure"
+      - "traefik.http.routers.frappe-ws.tls.certresolver=myresolver"
+      - "traefik.http.services.frappe-ws.loadbalancer.server.port=9000"
 
 volumes:
   mariadb-data:
