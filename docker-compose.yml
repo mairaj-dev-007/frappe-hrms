@@ -51,14 +51,14 @@ services:
 
     command: >
       bash -c "
-      if [ ! -d /home/frappe/frappe-bench/sites/${SITE_NAME} ];
+      if [ ! -d /home/frappe/frappe-bench/sites/frap.web.musketeers.dev ];
       then
-        bench new-site ${SITE_NAME}
-          --mariadb-root-password=$MARIADB_ROOT_PASSWORD
-          --admin-password=$ADMIN_PASSWORD
-          --db-name=$DB_NAME
+        bench new-site frap.web.musketeers.dev
+          --mariadb-root-password=123
+          --admin-password=admin123
+          --db-name=Frappe-HRMS-db
           --force &&
-        bench --site ${SITE_NAME} install-app hrms;
+        bench --site frap.web.musketeers.dev install-app hrms;
       fi &&
       bench start
       "
