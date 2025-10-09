@@ -33,7 +33,6 @@ services:
       - DB_NAME=Frappe-HRMS-db
       - DB_USER=Frappe-HRMS-db
       - DB_PASSWORD=mairaj1122@
-      - MARIADB_ROOT_PASSWORD=123
 
       # ---- Redis connection ----
       - REDIS_CACHE=redis://redis:6379/0
@@ -48,20 +47,6 @@ services:
     depends_on:
       - mariadb
       - redis
-
-    command: >
-      bash -c "
-      if [ ! -d /home/frappe/frappe-bench/sites/frap.web.musketeers.dev ];
-      then
-        bench new-site frap.web.musketeers.dev
-          --mariadb-root-password=123
-          --admin-password=admin123
-          --db-name=Frappe-HRMS-db
-          --force &&
-        bench --site frap.web.musketeers.dev install-app hrms;
-      fi &&
-      bench start
-      "
 
 volumes:
   mariadb-data:
